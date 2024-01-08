@@ -1,0 +1,25 @@
+Write the HDL for, and test, the following logic chips in this order:
+
+Not
+And
+Or
+Xor
+Not16
+And16
+Or16
+Or8Way
+Mux
+DMux
+Mux16
+Mux4Way16
+Mux8Way16
+DMux4Way
+DMux8Way
+
+To Submit:
+
+Put the HDL files only into a folder (directory) 
+labeled with your last name, first name, and Project1. 
+(Example: smithJohnProject1) Include a README file explaining 
+what works and what doesn't, compress the folder and upload.
+
