@@ -36,20 +36,18 @@ Mux [X]
 - A Mux gate has three inputs and one output. The first two inputs are the data inputs, the third input is the selector.
   If the selector is 0 then the output is the first data input, otherwise the output is the second data input.
 
-DMux
+DMux [x]
+- A DMux gate has one input and two outputs. The input is the data input, the first output is the first data output,
+  the second output is the second data output. The selector chooses which output to set to the input. If the selector
+  is 0 then the first output is set to the input, otherwise the second output is set to the input.
 
+Mux16 [X]
 
-Mux16
-
-
-Mux4Way16
-
+Mux4Way16 [x]
 
 Mux8Way16
 
-
 DMux4Way
-
 
 DMux8Way
 
