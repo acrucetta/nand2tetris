@@ -10,6 +10,9 @@ CHIP HalfAdder {
     OUT sum,    // Right bit of a + b 
         carry;  // Left bit of a + b
 
+    // A half adder can be done with a 
+    // XOR gate 
     PARTS:
-    //// Replace this comment with your code.
+    Xor(a=a, b=b, out=sum);
+    And(a=a, b=b, out=carry);
 }
