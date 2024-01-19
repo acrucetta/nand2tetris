@@ -13,5 +13,18 @@ CHIP RAM512 {
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    // MSB - select the ram8 to write to
+    DMux8Way(in=load, sel=address[6..8], a=d1, b=d2, c=d3, d=d4, e=d5, f=d6, g=d7, h=d8);
+    
+    // LSB - write to the selected registers
+    RAM64(in=in, load=d1, address=address[0..5] out=ram1);
+    RAM64(in=in, load=d2, address=address[0..5] out=ram2);
+    RAM64(in=in, load=d3, address=address[0..5] out=ram3);
+    RAM64(in=in, load=d4, address=address[0..5] out=ram4);
+    RAM64(in=in, load=d5, address=address[0..5] out=ram5);
+    RAM64(in=in, load=d6, address=address[0..5] out=ram6);
+    RAM64(in=in, load=d7, address=address[0..5] out=ram7);
+    RAM64(in=in, load=d8, address=address[0..5] out=ram8);
+
+    Mux8Way16(a=ram1, b=ram2, c=ram3, d=ram4, e=ram5, f=ram6, g=ram7, h=ram8, sel=address[6..8], out=out);
 }

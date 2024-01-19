@@ -1,9 +1,9 @@
 Write the HDL for, and test, the following chips in this order:
 
-Bit (folder a)
-Register (folder a)
-RAM8 (folder a)
-RAM64 (folder a)
+Bit (folder a) [X]
+Register (folder a) [x]
+RAM8 (folder a) [x]
+RAM64 (folder a) [x]
 RAM512 (folder b)
 RAM4K (folder b)
 RAM16K (folder b)
