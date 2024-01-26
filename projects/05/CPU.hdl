@@ -33,14 +33,20 @@ CHIP CPU {
 
     PARTS:
 
+    // Figure out the type of instruction we're getting
+    // We can tell from the MSB bit of the instruction
+    // If it's 0, it's an A-instruction
+    // If it's 1, it's a C-instruction
+    Not(in=instruction[15], out=ni);
+
     // Instruction Zone
     Mux16(a=ALUout, b=instruction, sel=c, out=A_MuxOut);
-    Register(in=A_MuxOut, load=c, out=A_RegisterOut, out=addressM);
+    ARegister(in=A_MuxOut, load=c, out=A_RegisterOut, out=addressM);
 
-    Register(in=ALUout, load=c, out=D_RegisterOut);
+    DRegister(in=ALUout, load=c, out=D_RegisterOut);
     Mux16(a=A_RegisterOut, b=inM, sel=c, out=B_MuxOut);
 
     ALU(x=D_RegisterOut, y=B_MuxOut, zx=, nx=, zy=, ny=, f=, no=, out=ALUout, out=outM, zr=, ng=);
 
-    PC(in=A_RegisterOut, load=reset, inc=, reset=reset, out=pc);
+    PC(in=A_RegisterOut, load=reset, inc=true, reset=reset, out[0..14]=pc);
 }
