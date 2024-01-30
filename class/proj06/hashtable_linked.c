@@ -37,7 +37,7 @@ void print_table() {
       printf("\t%i\t ", i);
       item *tmp = hash_table[i];
       while (tmp != NULL) {
-        printf("%s - ", hash_table[i]);
+        printf("%s - ", tmp->key);
         tmp = tmp->next;
       }
       printf("\n");
@@ -49,7 +49,7 @@ bool hash_table_insert(item *p) {
   if (p == NULL) {
     return false;
   }
-  int idx = hash(p->value);
+  int idx = hash(p->key);
   p -> next = hash_table[idx];
   hash_table[idx] = p;
   return true;
@@ -58,7 +58,7 @@ bool hash_table_insert(item *p) {
 item *hash_table_get(char *key) {
   int idx = hash(key);
   item *tmp = hash_table[idx];
-  while (tmp != NULL && strcmp(tmp->key, key) != 0) {
+  while (tmp != NULL && strncmp(tmp->key, key, MAX_KEY) != 0) {
     tmp = tmp->next;
   }
   return tmp;
