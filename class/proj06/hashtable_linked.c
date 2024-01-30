@@ -14,13 +14,11 @@ typedef struct {
 item *hash_table[TABLE_SIZE];
 
 unsigned int hash(char *name) {
-  int length = strnlen(name, MAX_KEY);
-  unsigned int hash_value = 0;
-  for (int i = 0; i < length; i++) {
-    hash_value += name[i];
-    hash_value = (hash_value * name[i]) % TABLE_SIZE;
+  unsigned hashval;
+  for (hashval = 0; *name != '\0'; name++) {
+    hashval = *name + 31 * hashval;
   }
-  return hash_value;
+  return hashval % TABLE_SIZE;
 }
 
 void init_hash_table() {
