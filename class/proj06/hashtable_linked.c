@@ -6,7 +6,8 @@
 #define MAX_KEY 256
 #define TABLE_SIZE 100
 
-typedef struct {
+typedef struct
+{
   char key[MAX_KEY];
   char *value;
   struct item *next;
@@ -14,28 +15,38 @@ typedef struct {
 
 item *hash_table[TABLE_SIZE];
 
-unsigned int hash(char *name) {
+unsigned int hash(char *name)
+{
   unsigned hashval;
-  for (hashval = 0; *name != '\0'; name++) {
+  for (hashval = 0; *name != '\0'; name++)
+  {
     hashval = *name + 31 * hashval;
   }
   return hashval % TABLE_SIZE;
 }
 
-void hash_table_init() {
-  for (int i = 0; i < TABLE_SIZE; i++) {
+void hash_table_init()
+{
+  for (int i = 0; i < TABLE_SIZE; i++)
+  {
     hash_table[i] = NULL;
   }
 }
 
-void print_table() {
-  for (int i = 0; i < TABLE_SIZE; i++) {
-    if (hash_table[i] == NULL) {
+void print_table()
+{
+  for (int i = 0; i < TABLE_SIZE; i++)
+  {
+    if (hash_table[i] == NULL)
+    {
       printf("\t%i\t--\n", i);
-    } else {
+    }
+    else
+    {
       printf("\t%i\t ", i);
       item *tmp = hash_table[i];
-      while (tmp != NULL) {
+      while (tmp != NULL)
+      {
         printf("%s - ", tmp->key);
         tmp = tmp->next;
       }
@@ -44,14 +55,17 @@ void print_table() {
   }
 }
 
-bool hash_table_insert(char *key, char *value) {
+bool hash_table_insert(char *key, char *value)
+{
   item *new_item = (item *)malloc(sizeof(item));
-  if (new_item == NULL) {
+  if (new_item == NULL)
+  {
     return false;
   }
   strncpy(new_item->key, key, MAX_KEY);
   new_item->value = strdup(value);
-  if (new_item->value == NULL) {
+  if (new_item->value == NULL)
+  {
     free(new_item);
     return false;
   }
@@ -61,28 +75,35 @@ bool hash_table_insert(char *key, char *value) {
   return true;
 }
 
-item *hash_table_get(char *key) {
+item *hash_table_get(char *key)
+{
   int idx = hash(key);
   item *tmp = hash_table[idx];
-  while (tmp != NULL && strncmp(tmp->key, key, MAX_KEY) != 0) {
+  while (tmp != NULL && strncmp(tmp->key, key, MAX_KEY) != 0)
+  {
     tmp = tmp->next;
   }
   return tmp;
 }
 
-item *hash_table_remove(char *key) {
+item *hash_table_remove(char *key)
+{
   int idx = hash(key);
   item *tmp = hash_table[idx];
   item *prev = NULL;
-  while (tmp != NULL && strcmp(tmp->key, key) != 0) {
+  while (tmp != NULL && strcmp(tmp->key, key) != 0)
+  {
     prev = tmp;
     tmp = tmp->next;
   }
   if (tmp == NULL)
     return NULL;
-  if (prev == NULL) {
+  if (prev == NULL)
+  {
     hash_table[idx] = tmp->next;
-  } else {
+  }
+  else
+  {
     prev->next = tmp->next;
   }
   return tmp;
