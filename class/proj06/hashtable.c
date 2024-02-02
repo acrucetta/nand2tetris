@@ -23,7 +23,7 @@ unsigned int hash(char *name) {
   return hash_value;
 }
 
-void init_hash_table() {
+void hash_table_init() {
   for (int i = 0; i < TABLE_SIZE; i++) {
     hash_table[i] = NULL;
   }
@@ -89,7 +89,7 @@ item *hash_table_remove(char *key) {
 }
 
 int main() {
-  init_hash_table();
+  hash_table_init();
 
   item jacob = {.key = "jacob", .value = "hairy"};
   item bob = {.key = "bob", .value = "hairy-ish"};

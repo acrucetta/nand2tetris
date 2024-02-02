@@ -1,7 +1,9 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 #include "cleaner.h"
 #include "parser.h"
+#include "symbol.h"
 
 // Program
 //
@@ -30,13 +32,40 @@
 //      to the symbol table.
 // - Write code to machine language
 
+int parse(char *buffer) {
+  char *str_copy = strdup(buffer);
+  char *line = strtok(str_copy, "\n");
+  while (line != NULL) {
+    enum INSTRUCTION instruction = command_type(line);
+    switch (instruction) {
+    case A_INSTRUCTION:
+      printf("A_INSTRUCTION: %s\n", get_symbol(line));
+      break;
+    case C_INSTRUCTION:
+      printf("C_INSTRUCTION: %s\n", line);
+      printf("Dest: %s\n", get_dest(line));
+      printf("Comp: %s\n", get_comp(line));
+      printf("Jump: %s\n", get_jump(line));
+      break;
+    case L_INSTRUCTION:
+      printf("L_INSTRUCTION: %s\n", line);
+      break;
+    }
+    line = strtok(NULL, "\n");
+  }
+  return 1;
+}
+
 int main(int argc, char *argv[]) {
   // Load file
-  if (argc < 1) {
+  if (argc < 2) {
     printf("No file provided.");
     return 1;
   }
-  char *file_name = argv[1];
-  char *cleansed_file = clean_file(file_name);
-  printf("%s",cleansed_file);
+  // char *file_name = argv[1];
+  // char *cleansed_file = clean_file(file_name);
+  symbol_table_init();
+  int test = get_address("SP");
+  printf("%d", test);
+  // int* result = parse(cleansed_file);
 }

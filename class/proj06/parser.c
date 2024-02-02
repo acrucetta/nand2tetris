@@ -28,11 +28,6 @@
 // @0
 // M=D
 
-enum INSTRUCTION command_type(char *command);
-char *get_dest(char *command);
-char *get_comp(char *command);
-char *getjump(char *command);
-
 enum INSTRUCTION { A_INSTRUCTION, C_INSTRUCTION, L_INSTRUCTION };
 
 enum INSTRUCTION command_type(char *command) {
@@ -94,48 +89,3 @@ char *get_comp(char *command) {
   return NULL;
 }
 
-int parse(char *buffer) {
-  char *current_command = "";
-  char *str_copy = strdup(buffer);
-  char *line = strtok(str_copy, "\n");
-  while (line != NULL) {
-    enum INSTRUCTION instruction = command_type(line);
-    switch (instruction) {
-    case A_INSTRUCTION:
-      printf("A_INSTRUCTION: %s\n", get_symbol(line));
-      break;
-    case C_INSTRUCTION:
-      printf("C_INSTRUCTION: %s\n", line);
-      printf("Dest: %s\n", get_dest(line));
-      printf("Comp: %s\n", get_comp(line));
-      printf("Jump: %s\n", get_jump(line));
-      break;
-    case L_INSTRUCTION:
-      printf("L_INSTRUCTION: %s\n", line);
-      break;
-    }
-    line = strtok(NULL, "\n");
-    printf("Next line: %s\n", line);
-    printf("\n");
-  }
-  printf("done");
-  return 1;
-}
-
-int main(int argc, char *argv[]) {
-  // Load file
-  if (argc < 2) {
-    printf("No file provided.");
-    return 1;
-  }
-  char *file_name = argv[1];
-  char *buffer = clean_file(file_name);
-  if (buffer == NULL) {
-    return 1;
-  }
-  printf("Buffer: %s\n", buffer);
-  parse(buffer);
-
-  free(buffer);
-  return 0;
-}

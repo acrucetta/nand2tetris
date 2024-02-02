@@ -1,9 +1,10 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define MAX_KEY 256
-#define TABLE_SIZE 20
+#define TABLE_SIZE 100
 
 typedef struct {
   char key[MAX_KEY];
@@ -21,7 +22,7 @@ unsigned int hash(char *name) {
   return hashval % TABLE_SIZE;
 }
 
-void init_hash_table() {
+void hash_table_init() {
   for (int i = 0; i < TABLE_SIZE; i++) {
     hash_table[i] = NULL;
   }
@@ -43,13 +44,20 @@ void print_table() {
   }
 }
 
-bool hash_table_insert(item *p) {
-  if (p == NULL) {
+bool hash_table_insert(char *key, char *value) {
+  item *new_item = (item *)malloc(sizeof(item));
+  if (new_item == NULL) {
     return false;
   }
-  int idx = hash(p->key);
-  p -> next = hash_table[idx];
-  hash_table[idx] = p;
+  strncpy(new_item->key, key, MAX_KEY);
+  new_item->value = strdup(value);
+  if (new_item->value == NULL) {
+    free(new_item);
+    return false;
+  }
+  int idx = hash(new_item->key);
+  new_item->next = hash_table[idx];
+  hash_table[idx] = new_item;
   return true;
 }
 
@@ -70,27 +78,12 @@ item *hash_table_remove(char *key) {
     prev = tmp;
     tmp = tmp->next;
   }
-  if (tmp == NULL) return NULL;
-  if (prev == NULL) { 
+  if (tmp == NULL)
+    return NULL;
+  if (prev == NULL) {
     hash_table[idx] = tmp->next;
   } else {
     prev->next = tmp->next;
   }
   return tmp;
-}
-
-int main() {
-  init_hash_table();
-
-  item jacob = {.key = "jacob", .value = "hairy"};
-  item bob = {.key = "bob", .value = "hairy-ish"};
-  item tom = {.key = "tom", .value = "not hairy"};
-
-  hash_table_insert(&jacob);
-  hash_table_insert(&tom);
-  hash_table_insert(&bob);
-
-  print_table();
-
-  return 0;
 }
