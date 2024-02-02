@@ -62,8 +62,8 @@ int main(int argc, char *argv[]) {
     printf("No file provided.");
     return 1;
   }
-  // char *file_name = argv[1];
-  // char *cleansed_file = clean_file(file_name);
+  char *file_name = argv[1];
+  char *cleansed_file = clean_file(file_name);
   symbol_table_init();
   int test = get_address("SP");
   printf("%d", test);

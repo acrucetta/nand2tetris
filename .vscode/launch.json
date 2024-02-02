@@ -1,16 +1,23 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug",
-            "program": "${workspaceFolder}/<executable file>",
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug",
+      "program": "${workspaceFolder}/class/proj06/program",
+      "args": [
+        "MaxL.asm"
+      ],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/andrescru/Library/CloudStorage/OneDrive-WaltzHealth/Documents/Github/nand2tetris/class/proj06",
+      "program": "/Users/andrescru/Library/CloudStorage/OneDrive-WaltzHealth/Documents/Github/nand2tetris/class/proj06/build/Debug/outDebug"
+    }
+  ]
 }
