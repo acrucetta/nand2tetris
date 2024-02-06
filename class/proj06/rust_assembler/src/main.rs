@@ -1,18 +1,17 @@
 
 
-fn extract_comp() {
-    pass
+fn extract_comp() -> i32 {
+    return 0;
 }
 
-fn extract_jump() {
-    pass
+fn extract_jump() -> i32 {
+   return 0;
 }
 
-fn extract_dest() {
-    pass
+fn extract_dest() -> i32 {
+    return 0;
 }
 
 fn main() {
-    pass
+    return;
 }
-

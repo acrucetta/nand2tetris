@@ -1,0 +1,1 @@
+/Users/andrescru/Library/CloudStorage/OneDrive-WaltzHealth/Documents/Github/nand2tetris/class/proj07/target/debug/proj07: /Users/andrescru/Library/CloudStorage/OneDrive-WaltzHealth/Documents/Github/nand2tetris/class/proj07/src/main.rs

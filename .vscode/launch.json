@@ -9,15 +9,15 @@
       "args": [
         "MaxL.asm"
       ],
-      "cwd": "${workspaceFolder}"
+      "cwd": "${workspaceFolder}/class/proj06"
     },
     {
       "name": "C/C++ Runner: Debug Session",
       "type": "lldb",
       "request": "launch",
       "args": [],
-      "cwd": "/Users/andrescru/Library/CloudStorage/OneDrive-WaltzHealth/Documents/Github/nand2tetris/class/proj06",
-      "program": "/Users/andrescru/Library/CloudStorage/OneDrive-WaltzHealth/Documents/Github/nand2tetris/class/proj06/build/Debug/outDebug"
+      "cwd": "/Users/andrescru/Library/CloudStorage/OneDrive-WaltzHealth/Documents/Github/nand2tetris/class/proj06/c_assembler",
+      "program": "/Users/andrescru/Library/CloudStorage/OneDrive-WaltzHealth/Documents/Github/nand2tetris/class/proj06/c_assembler/build/Debug/outDebug"
     }
   ]
 }
