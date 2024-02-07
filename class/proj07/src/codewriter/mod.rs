@@ -13,6 +13,8 @@ generating assembly instructions that implement the VM command push local 2.
 
 */
 
+
+
 /*
 Arithmetic-Logical Commands:
 - add, sub, neg
@@ -21,11 +23,10 @@ Arithmetic-Logical Commands:
 
 The VM implementation pops two values off the stack's top, computes them,
 and pushes the resulting value back onto the stack.
-
 */
 
 fn write_arithmetic(command : Command) -> String {
-    return;
+    return String::from("");
 }
 
 /*
