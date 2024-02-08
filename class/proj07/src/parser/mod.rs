@@ -13,9 +13,9 @@ pub enum CommandType {
 }
 
 pub struct Command {
-    command_type: CommandType,
-    arg1: String,
-    arg2: Option<i32>,
+    pub command_type: CommandType,
+    pub arg1: String,
+    pub arg2: Option<i32>,
 }
 
 impl Command {

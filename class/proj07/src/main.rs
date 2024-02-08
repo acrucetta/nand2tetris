@@ -49,28 +49,6 @@ struct MemoryCell {
     value: i32
 }
 
-#[derive(Debug)]
-struct Stack {
-    global_stack : Vec<MemoryCell>
-}
-
-impl FromIterator<MemoryCell> for Stack {
-    fn from_iter<I: IntoIterator<Item=MemoryCell>>(iter: I) -> Self {
-        let global_stack = iter.into_iter().collect();
-        Stack { global_stack }
-    }
-}
-
-impl Stack {
-    fn new() -> Stack {
-        let global_stack = (256..2048)
-            .map(|x| MemoryCell { address: x, value: 0 })
-            .collect();
-        return global_stack;
-    }
-}
-
-
 
 fn main() {
     let contents = read_file(FILENAME);
@@ -78,7 +56,7 @@ fn main() {
     let commands = build_command_list(cleansed_file);
     let out_file = File::create(OUT_FILE);
     
-    let mut stack = Stack::new();
+    let mut stack = Vec::<i16>::new();
     let mut ram = RAM::new();
     
     for command in commands {

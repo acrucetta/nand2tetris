@@ -1,4 +1,4 @@
-use std::fs::File;
+use std::{collections::HashMap, fmt::Error, fs::File, io::ErrorKind};
 
 use parser::{CommandType};
 use crate::parser::{self, Command};
@@ -25,8 +25,39 @@ The VM implementation pops two values off the stack's top, computes them,
 and pushes the resulting value back onto the stack.
 */
 
-fn write_arithmetic(command : Command) -> String {
-    return String::from("");
+fn write_arithmetic(command : Command) -> Result<Vec<String>, ErrorKind> {
+    let mapping: HashMap<&str, &str> = vec![
+        ("add", "+"),
+        ("sub", "-"),
+        ("neg", "-"),
+        ("eq", "JEQ"),
+        ("gt", "JGT"),
+        ("lt", "JLT"),
+        ("and", "&"),
+        ("or", "|"),
+        ("not", "!"),
+    ].into_iter().collect();
+
+    let mut result : Vec<String> = Vec::new();
+
+    // Adding SP-- to the result
+    result.extend(vec!["@SP", "AM=M-1", "D=M", "A=A-1"].iter().map(|x| x.to_string()));
+
+
+    let operation = command.arg1.to_string();
+    let op = mapping.get(operation.as_str()).unwrap();
+    match operation.as_str() {
+        "add" | "sub" | "and" | "or" => {
+            result.push(format!("M=M{}D", op));
+        },
+        "eq" | "gt" | "lt" => {
+            return Err(ErrorKind::InvalidInput);
+        },
+        _ => {
+            return Err(ErrorKind::InvalidInput);
+        }
+    }
+    return result;
 }
 
 /*
