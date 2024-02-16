@@ -13,6 +13,48 @@ generating assembly instructions that implement the VM command push local 2.
 
 */
 
+// Writes assembly code for: 'label', 'goto', 'if-goto'
+fn write_branch(command: Command, function : String) -> Result<Vec<String>, ErrorKind> {
+    let asm: Vec<String> = Vec::new();
+    match command.command_type {
+        CommandType::CLabel => {
+            let label = 
+        }
+        CommandType::CGoto => {
+            return Ok(Vec::new());
+        }
+        CommandType::CIf => {
+            return Ok(Vec::new());
+        }
+        _ => {
+            return Err(ErrorKind::InvalidInput)
+        }
+    }
+}
+
+// Writes assembly code for: 'function', 'call', 'return'
+fn write_function(command: Command) -> Result<Vec<String>, ErrorKind> {
+    match command.command_type {
+        CommandType::CCall => {
+            let function_name = command.arg1;
+            let n_args = command.arg2;
+            return Ok(Vec::new());
+        }
+        CommandType::CFunction => {
+            let function_name = command.arg1;
+            let n_locals= command.arg2;
+            return Ok(Vec::new());
+        }
+        CommandType::CReturn => {
+            return Ok(Vec::new());
+        }
+        _ => {
+            return Err(ErrorKind::InvalidInput)
+        }
+    }
+}
+
+
 /*
 Arithmetic-Logical Commands:
 - add, sub, neg
@@ -123,7 +165,7 @@ fn write_pushpop(command: Command, index: i16) -> Result<Vec<String>, ErrorKind>
         String::from("M=D"),
     ];
     let increment_sp = vec![String::from("@SP"), String::from("M=M+1")];
-    let decrement_sp = vec![String::from("@SP"), String::from("M=M-1")];
+    let decrement_sp_and_store = vec![String::from("@SP"), String::from("AM=M-1"), String::from("D=M")];
 
     match command.command_type {
         CommandType::CPush => {
@@ -159,9 +201,21 @@ fn write_pushpop(command: Command, index: i16) -> Result<Vec<String>, ErrorKind>
         }
         CommandType::CPop => {
             match segment.as_str() {
-                "local" => {
-                    return Err(ErrorKind::InvalidInput);
+                "local" | "argument" | "this" | "that" => {
+                    asm.extend(decrement_sp_and_store);
+                    asm.push(format!("@{}", op_segment));
+                    asm.push(String::from("D=M"));
+                    asm.push(format!("@{}", value));
+                    asm.push(String::from("A=D+A"));
+                    asm.push(String::from("M=D"));
                 }
+                "temp" | "pointer" | "static" => {
+                    let relative_segment = index + op_segment.parse::<i16>().unwrap();
+                    asm.extend(decrement_sp_and_store);
+                    asm.push(format!("@{}", relative_segment));
+                    asm.push(String::from("M=D"));
+                }
+                _ => return Err(ErrorKind::InvalidData)
             }
         }
         _ => {
