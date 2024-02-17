@@ -13,23 +13,51 @@ generating assembly instructions that implement the VM command push local 2.
 
 */
 
+pub fn write_code(
+    command: Command,
+    function: String,
+    index: i16,
+) -> Result<Vec<String>, ErrorKind> {
+    let asm = {
+        match command.command_type {
+            CommandType::CLabel | CommandType::CGoto | CommandType::CIf => {
+                write_branch(command, function)
+            }
+            CommandType::CPop | CommandType::CPush => write_pushpop(command, index),
+            CommandType::CCall | CommandType::CFunction | CommandType::CReturn => {
+                write_function(command)
+            }
+            CommandType::CArithmetic => write_arithmetic(command),
+        }
+    };
+    asm
+}
+
 // Writes assembly code for: 'label', 'goto', 'if-goto'
-fn write_branch(command: Command, function : String) -> Result<Vec<String>, ErrorKind> {
-    let asm: Vec<String> = Vec::new();
+fn write_branch(command: Command, function: String) -> Result<Vec<String>, ErrorKind> {
+    let mut asm: Vec<String> = Vec::new();
+    let label_name = String::from(format!("{}${}", function, command.arg1)); // boot$function
+    let decrement_sp_and_store = vec![
+        String::from("@SP"),
+        String::from("AM=M-1"),
+        String::from("D=M"),
+    ];
     match command.command_type {
         CommandType::CLabel => {
-            let label = 
+            asm.push(format!("({})", label_name)); // (labelname)
         }
         CommandType::CGoto => {
-            return Ok(Vec::new());
+            asm.push(format!("@{}", label_name)); // @labelname
+            asm.push(String::from("0;JMP"));
         }
         CommandType::CIf => {
-            return Ok(Vec::new());
+            asm.extend(decrement_sp_and_store);
+            asm.push(format!("@{}", label_name));
+            asm.push(String::from("D;JNE"));
         }
-        _ => {
-            return Err(ErrorKind::InvalidInput)
-        }
+        _ => return Err(ErrorKind::InvalidInput),
     }
+    return Ok(asm);
 }
 
 // Writes assembly code for: 'function', 'call', 'return'
@@ -38,22 +66,24 @@ fn write_function(command: Command) -> Result<Vec<String>, ErrorKind> {
         CommandType::CCall => {
             let function_name = command.arg1;
             let n_args = command.arg2;
+            // Push Return Address
+            // Push Symbols (LCL, ARG, THIS, THAT)
+            // Push Call ASM
             return Ok(Vec::new());
         }
         CommandType::CFunction => {
             let function_name = command.arg1;
-            let n_locals= command.arg2;
+            let n_locals = command.arg2;
+            // Push Function ASM
+            // Re-assign label
             return Ok(Vec::new());
         }
         CommandType::CReturn => {
             return Ok(Vec::new());
         }
-        _ => {
-            return Err(ErrorKind::InvalidInput)
-        }
+        _ => return Err(ErrorKind::InvalidInput),
     }
 }
-
 
 /*
 Arithmetic-Logical Commands:
@@ -165,66 +195,65 @@ fn write_pushpop(command: Command, index: i16) -> Result<Vec<String>, ErrorKind>
         String::from("M=D"),
     ];
     let increment_sp = vec![String::from("@SP"), String::from("M=M+1")];
-    let decrement_sp_and_store = vec![String::from("@SP"), String::from("AM=M-1"), String::from("D=M")];
+    let decrement_sp_and_store = vec![
+        String::from("@SP"),
+        String::from("AM=M-1"),
+        String::from("D=M"),
+    ];
 
     match command.command_type {
-        CommandType::CPush => {
-            match segment.as_str() {
-                "constant" => {
-                    asm.push(format!("@{}", value));
-                    asm.push(String::from("D=A"));
-                    asm.extend(put_at_sp);
-                    asm.extend(increment_sp);
-                }
-                "static" | "pointer" | "temp" => {
-                    let relative_segment = index + op_segment.parse::<i16>().unwrap();
-                    asm.push(format!("@{}", relative_segment));
-                    asm.push(String::from("D=A"));
-                    asm.push(format!("@{}", op_segment));
-                    asm.push(String::from("A=D+A"));
-                    asm.push(String::from("D=M"));
-                    asm.extend(put_at_sp);
-                }
-                "local" | "argument" | "this" | "that" => {
-                    asm.push(format!("@{}", value));
-                    asm.push(String::from("D=A"));
-                    asm.push(format!("@{}", op_segment));
-                    asm.push(String::from("A=D+M"));
-                    asm.push(String::from("D=M"));
-                    asm.extend(put_at_sp);
-                    asm.extend(increment_sp);
-                }
-                _ => {
-                    return Err(ErrorKind::InvalidInput);
-                }
+        CommandType::CPush => match segment.as_str() {
+            "constant" => {
+                asm.push(format!("@{}", value));
+                asm.push(String::from("D=A"));
+                asm.extend(put_at_sp);
+                asm.extend(increment_sp);
             }
-        }
-        CommandType::CPop => {
-            match segment.as_str() {
-                "local" | "argument" | "this" | "that" => {
-                    asm.extend(decrement_sp_and_store);
-                    asm.push(format!("@{}", op_segment));
-                    asm.push(String::from("D=M"));
-                    asm.push(format!("@{}", value));
-                    asm.push(String::from("A=D+A"));
-                    asm.push(String::from("M=D"));
-                }
-                "temp" | "pointer" | "static" => {
-                    let relative_segment = index + op_segment.parse::<i16>().unwrap();
-                    asm.extend(decrement_sp_and_store);
-                    asm.push(format!("@{}", relative_segment));
-                    asm.push(String::from("M=D"));
-                }
-                _ => return Err(ErrorKind::InvalidData)
+            "static" | "pointer" | "temp" => {
+                let relative_segment = index + op_segment.parse::<i16>().unwrap();
+                asm.push(format!("@{}", relative_segment));
+                asm.push(String::from("D=A"));
+                asm.push(format!("@{}", op_segment));
+                asm.push(String::from("A=D+A"));
+                asm.push(String::from("D=M"));
+                asm.extend(put_at_sp);
             }
-        }
+            "local" | "argument" | "this" | "that" => {
+                asm.push(format!("@{}", value));
+                asm.push(String::from("D=A"));
+                asm.push(format!("@{}", op_segment));
+                asm.push(String::from("A=D+M"));
+                asm.push(String::from("D=M"));
+                asm.extend(put_at_sp);
+                asm.extend(increment_sp);
+            }
+            _ => {
+                return Err(ErrorKind::InvalidInput);
+            }
+        },
+        CommandType::CPop => match segment.as_str() {
+            "local" | "argument" | "this" | "that" => {
+                asm.extend(decrement_sp_and_store);
+                asm.push(format!("@{}", op_segment));
+                asm.push(String::from("D=M"));
+                asm.push(format!("@{}", value));
+                asm.push(String::from("A=D+A"));
+                asm.push(String::from("M=D"));
+            }
+            "temp" | "pointer" | "static" => {
+                let relative_segment = index + op_segment.parse::<i16>().unwrap();
+                asm.extend(decrement_sp_and_store);
+                asm.push(format!("@{}", relative_segment));
+                asm.push(String::from("M=D"));
+            }
+            _ => return Err(ErrorKind::InvalidData),
+        },
         _ => {
             return Err(ErrorKind::InvalidInput);
         }
     }
     return Ok(asm);
 }
-
 
 #[cfg(test)]
 
@@ -239,13 +268,16 @@ mod tests {
             arg2: None,
         };
         let result = write_arithmetic(command);
-        assert_eq!(result, Ok(vec![
-            String::from("@SP"),
-            String::from("AM=M-1"),
-            String::from("D=M"),
-            String::from("A=A-1"),
-            String::from("M=M+D"),
-        ]));
+        assert_eq!(
+            result,
+            Ok(vec![
+                String::from("@SP"),
+                String::from("AM=M-1"),
+                String::from("D=M"),
+                String::from("A=A-1"),
+                String::from("M=M+D"),
+            ])
+        );
     }
 
     #[test]
@@ -257,17 +289,20 @@ mod tests {
         };
         let index = 0;
         let result = write_pushpop(command, index);
-        assert_eq!(result, Ok(vec![
-            String::from("@2"),
-            String::from("D=A"),
-            String::from("@LCL"),
-            String::from("A=D+M"),
-            String::from("D=M"),
-            String::from("@SP"),
-            String::from("A=M"),
-            String::from("M=D"),
-            String::from("@SP"),
-            String::from("M=M+1"),
-        ]));
+        assert_eq!(
+            result,
+            Ok(vec![
+                String::from("@2"),
+                String::from("D=A"),
+                String::from("@LCL"),
+                String::from("A=D+M"),
+                String::from("D=M"),
+                String::from("@SP"),
+                String::from("A=M"),
+                String::from("M=D"),
+                String::from("@SP"),
+                String::from("M=M+1"),
+            ])
+        );
     }
 }
