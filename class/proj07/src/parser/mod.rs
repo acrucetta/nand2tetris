@@ -53,7 +53,7 @@ pub fn get_command_type(command: &str) -> CommandType {
 ///
 /// A vector of commands.
 pub fn build_command_list(cleaned_lines: Vec<String>) -> Vec<Command> {
-    let mut commands : Vec<Command> = Vec::new();
+    let mut commands: Vec<Command> = Vec::new();
     for command in cleaned_lines {
         let command_type = get_command_type(&command);
         let command_parts = command.split(" ").collect::<Vec<&str>>();

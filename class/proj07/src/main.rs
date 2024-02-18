@@ -2,7 +2,7 @@ pub mod codewriter;
 pub mod io;
 pub mod parser;
 
-use codewriter::write_code;
+use codewriter::write_assembly;
 use io::{clean_file, read_file};
 use parser::{build_command_list, get_command_type, Command};
 use std::iter::FromIterator;
@@ -58,14 +58,10 @@ fn main() {
     let mut stack = Vec::<i16>::new();
     let mut ram = RAM::new();
     let asm: Vec<String> = Vec::new();
+    let vm_counter: i16 = 0;
     for command in commands {
-        let i_asm = codewriter::write_code(command, function, index);
-        match i_asm {
-            Ok(i_asm) => {
-                asm.extend(i_asm);
-            }
-            Err(i_asm) => {}
-        }
+        let i_asm = codewriter::write_assembly(command, vm_counter)?;
+        vm_counter += 1;
     }
     return;
 }
