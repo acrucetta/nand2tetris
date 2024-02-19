@@ -1,0 +1,32 @@
+
+/*
+Initializes the VIM Maze Game. This is
+a game that requires the user to navigate
+a maze using the VIM editor commands.
+
+Initially the user will only have
+access to the basic commands, but as
+they progress through the maze they
+will unlock more commands.
+
+Basic Commands:
+h - move left
+j - move down
+k - move up
+l - move right
+*/
+
+class VimMazeGame {
+    field Maze maze; // maze of the game
+    field int direction;  // the square's current direction
+
+    constructor VimMazeGame new() {
+        return this;
+    }
+
+    method void dispose() {}
+
+    method void moveSquare() {}
+
+    method void run() {}
+}

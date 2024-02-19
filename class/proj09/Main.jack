@@ -1,0 +1,11 @@
+
+
+class Main {
+    function void main() {
+        var VimMazeGame game;
+        let game = VimMazeGame.new();
+        do game.run();
+        do game.dispose();
+        return;
+    }
+}

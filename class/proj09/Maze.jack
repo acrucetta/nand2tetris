@@ -1,0 +1,11 @@
+/*
+
+Implements a graphical maze the user
+needs to traverse. The maze has top-left x and y
+coordinates, and a size.
+
+We will randomly create paths the user will need
+to traverse and the user will be placed in the
+beginning of the game at random.
+
+*/
