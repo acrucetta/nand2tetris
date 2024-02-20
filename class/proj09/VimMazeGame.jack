@@ -17,16 +17,54 @@ l - move right
 */
 
 class VimMazeGame {
-    field Maze maze; // maze of the game
-    field int direction;  // the square's current direction
+    field Player player; // player of the game
+    field int direction;  // the player's current direction
 
     constructor VimMazeGame new() {
+        // The initial player will be located in the middle
+        // of the maze, facing right. It will be of size 1x1.
+        let player = Player.new(50,50,5);
+        let direction = 0;
         return this;
     }
 
-    method void dispose() {}
+    method void dispose() {
+        do player.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
 
-    method void moveSquare() {}
+    method void movePlayer() {
+        if (direction = 1) { do player.moveUp(); }
+        if (direction = 2) { do player.moveDown(); }
+        if (direction = 3) { do player.moveLeft(); }
+        if (direction = 4) { do player.moveRight(); }
+        do Sys.wait(1);  // delays the next movement
+        return;
+   }
 
-    method void run() {}
+    method void run() {
+        var char key;
+        var boolean exit;
+        let exit = false;
+
+        while (~exit) {
+            // waits for a key to be pressed
+            while (key = 0) {
+                let key = Keyboard.keyPressed();
+                do movePlayer();
+            }
+            if (key = 81)  { let exit = true; }     // q key
+            if (key = 107) { let direction = 1; }   // k key
+            if (key = 106) { let direction = 2; }   // j key 
+            if (key = 104) { let direction = 3; }   // h key
+            if (key = 108) { let direction = 4; }   // l key
+
+            // waits for the key to be released
+            while (~(key = 0)) {
+                let key = Keyboard.keyPressed();
+                do movePlayer(); }
+        } // while
+     return;
+   }
 }
